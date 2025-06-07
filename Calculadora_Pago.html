@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora de Ganancia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      white-space: pre-line;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .historial {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .historial h3 {
+      margin-bottom: 5px;
+    }
+
+    .historial ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .historial li {
+      background: #e9e9e9;
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .historial .texto {
+      flex-grow: 1;
+    }
+
+    .btn-eliminar {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Calculadora de Ganancia</h2>
+
+    <label for="kilos">Kilos hechos:</label>
+    <input type="number" id="kilos" placeholder="Ingrese los kilos" />
+
+    <label for="porcentaje">Porcentaje a disminuir (% - opcional):</label>
+    <input type="number" id="porcentaje" placeholder="Ejemplo: 5" />
+
+    <label for="precio">Precio por quintal:</label>
+    <input type="number" id="precio" placeholder="Ingrese el precio" />
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <div class="historial">
+    <h3>Historial de Cálculos</h3>
+    <ul id="listaHistorial"></ul>
+  </div>
+
+  <div class="footer">
+    Autor: <strong>Joel Hernández</strong>
+  </div>
+
+  <script>
+    function calcular() {
+      const kilos = parseFloat(document.getElementById("kilos").value);
+      const porcentaje = parseFloat(document.getElementById("porcentaje").value) || 0;
+      const precio = parseFloat(document.getElementById("precio").value);
+
+      if (isNaN(kilos) || isNaN(precio) || kilos <= 0 || precio <= 0 || porcentaje < 0) {
+        document.getElementById("resultado").innerText = "Ingrese valores válidos";
+        return;
+      }
+
+      const aplicarDescuento = porcentaje > 0;
+      const kilosAjustados = aplicarDescuento ? kilos - (kilos * porcentaje / 100) : kilos;
+      const quintales = kilosAjustados / 46;
+      const ganancia = quintales * precio;
+
+      const resultadoTexto = 
+        `Kilos usados: ${kilosAjustados.toFixed(2)} kg` +
+        (aplicarDescuento ? ` (descuento de ${porcentaje}%)` : "") +
+        `\nGanancia: C$ ${ganancia.toFixed(2)}`;
+
+      document.getElementById("resultado").innerText = resultadoTexto;
+
+      // Crear nuevo registro de historial
+      const li = document.createElement("li");
+
+      const span = document.createElement("span");
+      span.className = "texto";
+      span.innerText = resultadoTexto;
+
+      const btnEliminar = document.createElement("button");
+      btnEliminar.innerText = "Eliminar";
+      btnEliminar.className = "btn-eliminar";
+      btnEliminar.onclick = () => li.remove();
+
+      li.appendChild(span);
+      li.appendChild(btnEliminar);
+
+      document.getElementById("listaHistorial").prepend(li);
+    }
+  </script>
+
+</body>
+</html>
